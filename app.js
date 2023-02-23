@@ -151,7 +151,7 @@ const deleteBuckets = async (username) => {
 }
 
 const deleteUserAfterFailCreate = (username) => {
-    client.query(`delete from Users where username=${username};`, (err, result) => {
+    client.query(`delete from Users where username='${username}';`, (err, result) => {
     })
 }
   
