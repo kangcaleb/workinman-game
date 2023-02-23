@@ -54,22 +54,22 @@ const login = (req, res) => {
   
     client.query(`select pass from Users where Users.username='${username}' limit 1`, (err, result) => {
       if (err) {
-          return res.status(500).send('Error in getting user')
+          res.status(500).send('Error in getting user')
       } else {
           const passwords = result.rows
   
           if (passwords) {
               if (passwords.length == 0) {
-                  return res.status(400).send({"code":400, "msg": 'No Username found'});
+                  res.status(400).send({"code":400, "msg": 'No Username found'});
               }
               if (passwords[0].pass === password) {
                   req.session.user = {'username': username, 'pass': password}
-                  return res.json({"path": "/dashboard"})
+                  res.json({"path": "/dashboard"})
               } else {
-                  return res.status(401).send('Credentials Invalid')
+                  res.status(401).send('Credentials Invalid')
               }
           } else {
-              return res.status(500).send('Error in getting user')
+              res.status(500).send('Error in getting user')
           }
       }
   })
@@ -111,12 +111,12 @@ const deleteUser = (req, res) => {
                 .then(response => {
                     return  res.status(200).json({"code": 200, "msg": "success"})
                 }).catch(err => {
-                    return  res.status(401).json({"code": 500, "msg": "Server error did not delete"})
+                    res.status(401).json({"code": 500, "msg": "Server error did not delete"})
                 })
               }
           })
       } else {
-          return res.status(401).json({"code": 401, "msg": "Credentials Invalid. Did not delete"})
+          res.status(401).json({"code": 401, "msg": "Credentials Invalid. Did not delete"})
       }
 }
 
@@ -174,13 +174,13 @@ const createUser = (req, res) => {
             s3.createBucket({Bucket: `${name}-csv`}, (err, _) => {
                 if (err) {
                     deleteUserAfterFailCreate(name)
-                    return res.status(500).json("error in creating new user")
+                    res.status(500).json("error in creating new user")
                 } else {
                     // Create img bucket for user
                     s3.createBucket({Bucket: `${name}-img`}, (awserr, _) => {
                         if (awserr) {
                             deleteUserAfterFailCreate(name)
-                            return res.status(500).json("error in creating new user")
+                            res.status(500).json("error in creating new user")
                         } else { 
                             // successfully created 2 buckets and user in postres
                             return res.status(200).json({"username": name})
