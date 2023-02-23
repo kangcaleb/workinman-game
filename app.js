@@ -106,26 +106,48 @@ const deleteUser = (req, res) => {
               if (err) {
                 res.status(500).json({"code": 500, "msg": "Server Error"})
               } else {
-                const imgParam = {Bucket: `${username}-img`}
-                s3.deleteBucket(imgParam, (err, _) => {
-                    if (err) {
-                        res.status(500).json({"code": 500, "msg": "Server Error"})
-                    } else {
-                        const csvParams = {Bucket: `${username}-csv`}
-                        s3.deleteBucket(csvParams, (err, data) => {
-                            if (err) {
-                                res.status(500).json({"code": 500, "msg": "Server Error"})
-                            } else {
-                                res.status(200).json({"code": 200, "msg": "Delete Success"})
-                            }
-                        })
-                    }
+                
+                deleteBuckets(username)
+                .then(response => {
+                    return  res.status(200).json({"code": 200, "msg": "success"})
+                }).catch(err => {
+                    return  res.status(401).json({"code": 500, "msg": "Server error did not delete"})
                 })
               }
           })
       } else {
           return res.status(401).json({"code": 401, "msg": "Credentials Invalid. Did not delete"})
       }
+}
+
+const deleteBuckets = async (username) => {
+    const imgParam = {Bucket: `${username}-img`}
+    const images = await s3.listObjectsV2(imgParam).promise()
+
+    if (images.Contents.length > 0) {
+        const imgKeys = images.Contents.map(({Key}) => ({Key}));
+        imgParam.Delete = {
+            Objects: imgKeys
+        }
+
+        await s3.deleteObjects(imgParam).promise()
+    }
+
+    const csvParam = {Bucket: `${username}-csv`}
+    const csvs = await s3.listObjectsV2(csvParam).promise()
+
+    if (csvs.Contents.length > 0) {
+        const csvKeys = csvs.Contents.map(({Key}) => ({Key}));
+        csvParam.Delete = {
+            Objects: csvKeys
+        }
+
+        await s3.deleteObjects(csvParam).promise()
+    }
+
+    await s3.deleteBucket({ Bucket: `${username}-img` }).promise();
+    await s3.deleteBucket({ Bucket: `${username}-csv` }).promise();
+    return true
 }
 
 const deleteUserAfterFailCreate = (username) => {
