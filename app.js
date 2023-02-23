@@ -175,13 +175,13 @@ const createUser = (req, res) => {
             s3.createBucket({Bucket: `${name}-csv`}, (err, _) => {
                 if (err) {
                     deleteUserAfterFailCreate(name)
-                    return res.status(500).send("Error in creating AWS csv bucket")
+                    return res.status(500).json("error in creating new user")
                 } else {
                     // Create img bucket for user
                     s3.createBucket({Bucket: `${name}-img`}, (awserr, _) => {
                         if (awserr) {
                             deleteUserAfterFailCreate(name)
-                            return res.status(500).send("Error in creating AWS IMAGE bucket")
+                            return res.status(500).json("error in creating new user")
                         } else { 
                             // successfully created 2 buckets and user in postres
                             return res.status(200).json({"username": name})
