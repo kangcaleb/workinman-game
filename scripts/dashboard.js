@@ -75,6 +75,7 @@ const displayQuestions = async (user) => {
         const root = document.getElementById('root');
         root.innerHTML = root.innerHTML + 
         `<div id="questions">
+            <h3>Questions</h3>
             <table id="questions-table">
                 <tr>
                     <th>Question</th>
@@ -83,6 +84,7 @@ const displayQuestions = async (user) => {
                     <th>A3</th>
                     <th>A4</th>
                     <th>Difficulty</th>
+                    <th>Image Name</th>
                 </tr>
             </table>
          </div>`
@@ -98,10 +100,10 @@ const displayQuestions = async (user) => {
                 <td>${question[3]}</th>
                 <td>${question[4]}</th>
                 <td>${question[5]}</th>
+                <td>${question[6]}</th>
+                <td>${question[7]}</th>
             </tr>`
          })
-         
-
     }
 }
 
@@ -122,6 +124,7 @@ const displayImages = async (user) => {
 
         root.innerHTML = root.innerHTML + 
         `<div id="images">
+            <h3>Images</h3>
             <ul id="image-list">
 
             </ul>

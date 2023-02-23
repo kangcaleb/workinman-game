@@ -30,7 +30,7 @@ const path = require('path')
  */
 const { Client } = require('pg');
 const client = new Client({
-  connectionString: 'postgres://gifplmcbylcauk:0f72a8944cdd72f68356bb592b060f414981ff0128c1ab3b9a8aed8ee5a97d6c@ec2-35-168-194-15.compute-1.amazonaws.com:5432/d1715hvjr80f3g', //process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
@@ -64,7 +64,7 @@ const login = (req, res) => {
               }
               if (passwords[0].pass === password) {
                   req.session.user = {'username': username, 'pass': password}
-                  return res.json({"path": "../views/dashboard.html"})
+                  return res.json({"path": "/dashboard"})
               } else {
                   return res.status(401).send('Credentials Invalid')
               }
@@ -191,7 +191,7 @@ const uploadCSV = (req, res) => {
         if (err) {
             res.status(500)
         } else {
-            return res.sendFile(path.join(__dirname, '/views/dashboard.html'))
+            return res.redirect('/dashboard')
         }
     })
 }
@@ -212,7 +212,7 @@ const uploadImg = (req, res) => {
         if (err) {
             res.status(500).send("Error Uploading Image")
         } else {
-            return res.sendFile(path.join(__dirname, '/views/dashboard.html'))
+            return res.redirect('/dashboard')
         }
     })
 }
@@ -287,6 +287,10 @@ const getImages = (req, res) => {
     });   
 }
 
+const getDashboard = (req, res) => {
+    return res.sendFile(path.join(__dirname, '/views/dashboard.html'))
+}
+
 /**
  * 
  * 
@@ -302,6 +306,7 @@ app.post('/uploadImg', uploadImg)
 
 app.get('/images', getImages)
 app.get('/questions', getAllCsv)
+app.get('/dashboard', getDashboard)
 
 
 /**
