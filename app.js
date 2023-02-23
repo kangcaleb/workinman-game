@@ -60,7 +60,7 @@ const login = (req, res) => {
   
           if (passwords) {
               if (passwords.length == 0) {
-                  return res.status(400).send('No Username found');
+                  return res.status(400).send({"code":400, "msg": 'No Username found'});
               }
               if (passwords[0].pass === password) {
                   req.session.user = {'username': username, 'pass': password}
@@ -174,17 +174,17 @@ const createUser = (req, res) => {
             // Create csv bucket for user
             s3.createBucket({Bucket: `${name}-csv`}, (err, _) => {
                 if (err) {
-                    res.status(500).send("Error in creating AWS csv bucket")
                     deleteUserAfterFailCreate(name)
+                    return res.status(500).send("Error in creating AWS csv bucket")
                 } else {
                     // Create img bucket for user
                     s3.createBucket({Bucket: `${name}-img`}, (awserr, _) => {
                         if (awserr) {
                             deleteUserAfterFailCreate(name)
-                            res.status(500).send("Error in creating AWS IMAGE bucket")
+                            return res.status(500).send("Error in creating AWS IMAGE bucket")
                         } else { 
                             // successfully created 2 buckets and user in postres
-                            res.status(200).json({"username": name})
+                            return res.status(200).json({"username": name})
                         }
                     })
                 }
