@@ -170,7 +170,9 @@ const deleteAccount = () => {
                 "username": username,
                 "password": password
             })
-        }).then(result => result.json())
+        }).then(result => {
+            result.json()
+        })
           .then(response => {
             if (response.code == 200) {
                 alert("Delete Success"); window.location.href = '/'

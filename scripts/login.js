@@ -21,10 +21,14 @@ const submitButtonClicked = (ev) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)
-        }).then(response => response.json())
-        .then(response => {
-            alert('account created')
-        }).catch(err => {
+        }).then(response => {
+            if (response.ok) {
+                alert("account created")
+            } else {
+                response.json().then(rsp => alert(rsp.msg))
+            }
+        })
+        .catch(err => {
             alert(err)
         })
 

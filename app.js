@@ -30,7 +30,7 @@ const path = require('path')
  */
 const { Client } = require('pg');
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: 'postgres://gifplmcbylcauk:0f72a8944cdd72f68356bb592b060f414981ff0128c1ab3b9a8aed8ee5a97d6c@ec2-35-168-194-15.compute-1.amazonaws.com:5432/d1715hvjr80f3g', //process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
@@ -167,20 +167,20 @@ const createUser = (req, res) => {
       client.query(`INSERT INTO USERS (username, pass) VALUES('${name}', '${password}')`, (err, _) => {
           if (err) {
               console.log(err)
-              res.status(400).json("error in creating new user")
+              res.status(400).json({"msg": err})
           } else {
 
             // Create csv bucket for user
             s3.createBucket({Bucket: `${name}-csv`}, (err, _) => {
                 if (err) {
                     deleteUserAfterFailCreate(name)
-                    res.status(500).json("error in creating new user")
+                    res.status(500).json({"msg": err.message})
                 } else {
                     // Create img bucket for user
                     s3.createBucket({Bucket: `${name}-img`}, (awserr, _) => {
                         if (awserr) {
                             deleteUserAfterFailCreate(name)
-                            res.status(500).json("error in creating new user")
+                            res.status(500).json({"msg": awserr.message})
                         } else { 
                             // successfully created 2 buckets and user in postres
                             return res.status(200).json({"username": name})
