@@ -338,6 +338,8 @@ app.get('/dashboard', getDashboard)
 app.get('/', (_, res) => {
     res.sendFile(path.join(__dirname, '/views/index.html'))
 })
-app.listen(3001, () => {
-    console.log("Listening on port 3001!")
+
+const port = process.env.PORT || 3000
+app.listen(port, () => {
+    console.log("Listening on port: ", + port)
 })
