@@ -21,7 +21,8 @@ const submitButtonClicked = (ev) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)
-        }).then(response => {
+        }).then(response => response.json())
+        .then(response => {
             alert('account created')
         }).catch(err => {
             alert(err)
