@@ -168,7 +168,7 @@ const createUser = (req, res) => {
       client.query(`INSERT INTO USERS (username, pass) VALUES('${name}', '${password}')`, (err, _) => {
           if (err) {
               console.log(err)
-              res.status(400).send("error in creating new user")
+              res.status(400).json("error in creating new user")
           } else {
 
             // Create csv bucket for user
