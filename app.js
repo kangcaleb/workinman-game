@@ -152,7 +152,6 @@ const deleteBuckets = async (username) => {
 
 const deleteUserAfterFailCreate = (username) => {
     client.query(`delete from Users where username=${username};`, (err, result) => {
-        if (err) throw err
     })
 }
   
@@ -267,7 +266,7 @@ const getAllCsv = async (req, res) => {
             const key = contentObj.Key
             const csvFile = await s3.getObject({Bucket: `${username}-csv`, Key: key}).promise();
             const stringBody = csvFile.Body.toString();
-            const parsed = Papa.parse(stringBody, {header: false}) // array here
+            const parsed = Papa.parse(stringBody, {header: false})
 
             parsed.data.forEach(question => {
                 list.push(question)
@@ -279,16 +278,6 @@ const getAllCsv = async (req, res) => {
         console.log(err)
         res.status(500).send("Error getting files")
     }
-       
-    // s3.listObjects(params, function (err, data) {
-    //     if(err)throw err;
-        
-    //     data.Contents.forEach(contentObj => {
-    //         const key = contentObj.Key;
-
-    //     })
-    //    }
-    // );   
 }
 
 const getImages = (req, res) => {
@@ -304,7 +293,9 @@ const getImages = (req, res) => {
        }
        
     s3.listObjectsV2(params, function (err, data) {
-        if(err)throw err;
+        if(err) {
+            res.status(500); return;
+        }
         return res.json({"username": username, "contentsArray": data.Contents});
     });   
 }
